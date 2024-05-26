@@ -9,6 +9,7 @@ import { Body,
     Post,
     Put,
     Query,
+    UsePipes,
     ValidationPipe } from "@nestjs/common";
 import { PostScheduleRequest } from "./models/post-schedule-request";
 import { PutScheduleRequest } from "./models/put-schedule-request";
@@ -17,6 +18,7 @@ import { Schedule } from "./models/schedule";
 import { GetSchedulesResponse } from "./models/get-schedules-response";
 
 @Controller('schedules')
+@UsePipes(new ValidationPipe({ whitelist: true }))
 export class SchedulesController {
     constructor(private readonly schedulesService: SchedulesService) {}
 
@@ -27,7 +29,7 @@ export class SchedulesController {
      * @returns The created schedule
      */
     @Post()
-    async create(@Body(ValidationPipe) postScheduleRequest: PostScheduleRequest): Promise<Schedule> {
+    async create(@Body() postScheduleRequest: PostScheduleRequest): Promise<Schedule> {
         console.log(postScheduleRequest);
         return this.schedulesService.create(postScheduleRequest);
     }
@@ -71,7 +73,7 @@ export class SchedulesController {
     @Put(':id')
     async update(
         @Param('id', ParseUUIDPipe) id: string,
-        @Body(ValidationPipe) putScheduleRequest: PutScheduleRequest
+        @Body() putScheduleRequest: PutScheduleRequest
     ): Promise<Schedule> {
         console.log(putScheduleRequest);
         const schedule = this.schedulesService.update(id, putScheduleRequest);

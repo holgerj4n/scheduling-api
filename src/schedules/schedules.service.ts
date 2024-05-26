@@ -31,9 +31,9 @@ export class SchedulesService {
     update(schedule_id: string, data: PutScheduleRequest): Schedule | undefined {
         const schedule = this.schedules.find(x => x.id === schedule_id);
         if (schedule) {
-            schedule.agent_id = data.agent_id;
-            schedule.start_time = new Date(data.start_time);
-            schedule.end_time = new Date(data.end_time);
+            schedule.agent_id = data.agent_id ?? schedule.agent_id;
+            schedule.start_time = data.start_time ? new Date(data.start_time) : schedule.start_time;
+            schedule.end_time = data.end_time ? new Date(data.end_time) : schedule.end_time;
         }
         return schedule;
     }

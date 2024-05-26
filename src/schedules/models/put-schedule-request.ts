@@ -1,12 +1,4 @@
-import { IsDateString, IsInt } from "class-validator";
+import { PartialType } from "@nestjs/mapped-types";
+import { PostScheduleRequest } from "./post-schedule-request";
 
-export class PutScheduleRequest {
-    @IsInt()
-    agent_id: number; // TODO make optional
-
-    @IsDateString()
-    start_time: string; // TODO make optional
-
-    @IsDateString()
-    end_time: string; // TODO make optional
-}
+export class PutScheduleRequest extends PartialType(PostScheduleRequest) {}
