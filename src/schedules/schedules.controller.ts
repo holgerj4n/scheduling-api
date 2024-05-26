@@ -86,6 +86,7 @@ export class SchedulesController {
      */
     @Delete(':id')
     async remove(@Param('id', ParseUUIDPipe) id: string) {
-        this.schedulesService.remove(id);
+        console.log(`DELETE schedule by id ${id}`);
+        return this.schedulesService.remove(id);
     }
 }
