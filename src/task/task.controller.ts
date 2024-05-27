@@ -8,6 +8,7 @@ import { Body,
     Post,
     Put,
     Query,
+    UseFilters,
     UsePipes,
     ValidationPipe } from '@nestjs/common';
 import { TaskService } from './task.service';
@@ -15,9 +16,11 @@ import { PostTaskRequest } from './models/post-task-request';
 import { PutTaskRequest } from './models/put-task-request';
 import { Task } from './models/task';
 import { GetTasksResponse } from './models/get-tasks-response';
+import { NotFoundExceptionFilter } from 'src/common/not-found.filter';
 
 @Controller('tasks')
 @UsePipes(new ValidationPipe({ whitelist: true }))
+@UseFilters(new NotFoundExceptionFilter())
 export class TaskController {
     constructor(private readonly taskService: TaskService) {}
 
@@ -29,7 +32,7 @@ export class TaskController {
      */
     @Post()
     async create(@Body() postTaskRequest: PostTaskRequest): Promise<Task> {
-        console.log(`POST task ${postTaskRequest}`);
+        console.log(`POST task ${JSON.stringify(postTaskRequest)}`);
         return this.taskService.create(postTaskRequest);
     }
 
@@ -71,7 +74,7 @@ export class TaskController {
         @Param('id', ParseUUIDPipe) id: string,
         @Body() putTaskRequest: PutTaskRequest
     ): Promise<Task> {
-        console.log(`PUT task ${id} ${putTaskRequest}`);
+        console.log(`PUT task ${id} ${JSON.stringify(putTaskRequest)}`);
         return this.taskService.update(id, putTaskRequest);
     }
 

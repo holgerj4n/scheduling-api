@@ -8,6 +8,7 @@ import { Body,
     Post,
     Put,
     Query,
+    UseFilters,
     UsePipes,
     ValidationPipe } from "@nestjs/common";
 import { PostScheduleRequest } from "./models/post-schedule-request";
@@ -15,9 +16,11 @@ import { PutScheduleRequest } from "./models/put-schedule-request";
 import { SchedulesService } from "./schedules.service";
 import { Schedule } from "./models/schedule";
 import { GetSchedulesResponse } from "./models/get-schedules-response";
+import { NotFoundExceptionFilter } from "src/common/not-found.filter";
 
 @Controller('schedules')
 @UsePipes(new ValidationPipe({ whitelist: true }))
+@UseFilters(new NotFoundExceptionFilter())
 export class SchedulesController {
     constructor(private readonly schedulesService: SchedulesService) {}
 
@@ -29,7 +32,7 @@ export class SchedulesController {
      */
     @Post()
     async create(@Body() postScheduleRequest: PostScheduleRequest): Promise<Schedule> {
-        console.log(`POST schedule ${postScheduleRequest}`);
+        console.log(`POST schedule ${JSON.stringify(postScheduleRequest)}`);
         return this.schedulesService.create(postScheduleRequest);
     }
 
@@ -70,7 +73,7 @@ export class SchedulesController {
         @Param('id', ParseUUIDPipe) id: string,
         @Body() putScheduleRequest: PutScheduleRequest
     ): Promise<Schedule> {
-        console.log(`PUT schedule ${id} ${putScheduleRequest}`);
+        console.log(`PUT schedule ${id} ${JSON.stringify(putScheduleRequest)}`);
         return this.schedulesService.update(id, putScheduleRequest);
     }
 
