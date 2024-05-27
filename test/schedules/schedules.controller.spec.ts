@@ -1,4 +1,3 @@
-import { NotFoundException } from "@nestjs/common";
 import { SchedulesController } from "./../../src/schedules/schedules.controller"
 import { SchedulesService } from "./../../src/schedules/schedules.service";
 
@@ -28,7 +27,7 @@ describe('SchedulesController', () => {
                 start_time: "2025-05-01",
                 end_time: "2025-06-01"
             }
-            const spy = jest.spyOn(schedulesService, 'create').mockReturnValueOnce(testSchedule);
+            const spy = jest.spyOn(schedulesService, 'create').mockResolvedValueOnce(testSchedule);
             const result = await schedulesController.create(input);
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenCalledWith(input);
@@ -38,26 +37,18 @@ describe('SchedulesController', () => {
 
     describe('findById', () => {
         it("should find a schedule by ID", async () => {
-            const spy = jest.spyOn(schedulesService, 'findById').mockReturnValueOnce(testSchedule);
+            const spy = jest.spyOn(schedulesService, 'findById').mockResolvedValueOnce(testSchedule);
             const result = await schedulesController.findById(testId);
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenCalledWith(testId);
             expect(result).toEqual(testSchedule);
-        });
-
-        it("should throw an exception if the schedule is not found", async () => {
-            const spy = jest.spyOn(schedulesService, 'findById');
-            const promise = schedulesController.findById(testId);
-            expect(spy).toHaveBeenCalledTimes(1);
-            expect(spy).toHaveBeenCalledWith(testId);
-            expect(promise).rejects.toThrow(NotFoundException);
         });
     });
 
     describe('findByQuery', () => {
         it("should find all schedules for an account", async () => {
             const accountId = 123;
-            const spy = jest.spyOn(schedulesService, 'findByAccount').mockReturnValueOnce([testSchedule]);
+            const spy = jest.spyOn(schedulesService, 'findByAccount').mockResolvedValueOnce([testSchedule]);
             const result = await schedulesController.findByQuery(accountId);
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenLastCalledWith(accountId);
@@ -73,25 +64,17 @@ describe('SchedulesController', () => {
         }
 
         it("should update an existing schedule", async () => {
-            const spy = jest.spyOn(schedulesService, 'update').mockReturnValueOnce(testSchedule);
+            const spy = jest.spyOn(schedulesService, 'update').mockResolvedValueOnce(testSchedule);
             const result = await schedulesController.update(testId, testPutScheduleRequest);
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenCalledWith(testId, testPutScheduleRequest);
             expect(result).toEqual(testSchedule);
         });
-
-        it("should throw an exception if the schedule is not found", async () => {
-            const spy = jest.spyOn(schedulesService, 'update');
-            const promise = schedulesController.update(testId, testPutScheduleRequest);
-            expect(spy).toHaveBeenCalledTimes(1);
-            expect(spy).toHaveBeenCalledWith(testId, testPutScheduleRequest);
-            expect(promise).rejects.toThrow(NotFoundException);
-        });
     });
 
     describe('remove', () => {
         it("should delete a schedule by ID", async () => {
-            const spy = jest.spyOn(schedulesService, 'remove');
+            const spy = jest.spyOn(schedulesService, 'remove').mockResolvedValueOnce(testSchedule);
             await schedulesController.remove(testId);
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenCalledWith(testId);

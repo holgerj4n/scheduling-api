@@ -16,7 +16,7 @@ import { PostTaskRequest } from './models/post-task-request';
 import { PutTaskRequest } from './models/put-task-request';
 import { Task } from './models/task';
 import { GetTasksResponse } from './models/get-tasks-response';
-import { NotFoundExceptionFilter } from 'src/common/not-found.filter';
+import { NotFoundExceptionFilter } from './../common/not-found.filter';
 
 @Controller('tasks')
 @UsePipes(new ValidationPipe({ whitelist: true }))

@@ -16,7 +16,7 @@ import { PutScheduleRequest } from "./models/put-schedule-request";
 import { SchedulesService } from "./schedules.service";
 import { Schedule } from "./models/schedule";
 import { GetSchedulesResponse } from "./models/get-schedules-response";
-import { NotFoundExceptionFilter } from "src/common/not-found.filter";
+import { NotFoundExceptionFilter } from "./../common/not-found.filter";
 
 @Controller('schedules')
 @UsePipes(new ValidationPipe({ whitelist: true }))
