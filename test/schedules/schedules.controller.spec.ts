@@ -1,3 +1,4 @@
+import { TaskService } from "./../../src/task/task.service";
 import { SchedulesController } from "./../../src/schedules/schedules.controller"
 import { SchedulesService } from "./../../src/schedules/schedules.service";
 
@@ -6,7 +7,7 @@ describe('SchedulesController', () => {
     let schedulesService: SchedulesService;
 
     beforeEach(() => {
-        schedulesService = new SchedulesService();
+        schedulesService = new SchedulesService(new TaskService());
         schedulesController = new SchedulesController(schedulesService);
     });
 
@@ -74,7 +75,7 @@ describe('SchedulesController', () => {
 
     describe('remove', () => {
         it("should delete a schedule by ID", async () => {
-            const spy = jest.spyOn(schedulesService, 'remove').mockResolvedValueOnce(testSchedule);
+            const spy = jest.spyOn(schedulesService, 'remove').mockResolvedValueOnce(undefined);
             await schedulesController.remove(testId);
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenCalledWith(testId);

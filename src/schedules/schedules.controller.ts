@@ -55,7 +55,7 @@ export class SchedulesController {
      * @returns All schedules that belong to the given account
      */
     @Get() // TODO accept agent_id query parameter
-    async findByQuery(@Query('account', ParseIntPipe) account_id: number): Promise<GetSchedulesResponse> {
+    async findByQuery(@Query('account_id', ParseIntPipe) account_id: number): Promise<GetSchedulesResponse> {
         console.log(`GET schedules by account ${account_id}`);
         const schedules = await this.schedulesService.findByAccount(account_id);
         return { data: schedules };

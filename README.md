@@ -72,7 +72,7 @@ curl -i -X GET \
 
 ```bash
 curl -i -X GET \
- 'http://localhost:3000/schedules?account=<account_id>'
+ 'http://localhost:3000/schedules?account_id=<account_id>'
 ```
 
 4. Update a schedule
@@ -93,6 +93,8 @@ curl -i -X PUT \
 curl -i -X DELETE \
  'http://localhost:3000/schedules/<schedule_id>'
 ```
+
+*Note: This endpoint will delete all tasks associated with the schedule.*
 
 ### Tasks
 
@@ -122,7 +124,7 @@ curl -i -X GET \
 
 ```bash
 curl -i -X GET \
- 'http://localhost:3000/tasks?schedule=<schedule_id>'
+ 'http://localhost:3000/tasks?schedule_id=<schedule_id>'
 ```
 
 4. Update a task

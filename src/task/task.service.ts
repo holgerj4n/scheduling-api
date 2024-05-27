@@ -39,8 +39,14 @@ export class TaskService extends PrismaClient {
     }
 
     async remove(task_id: string) {
-        return this.task.delete({
+        await this.task.delete({
             where: { id: task_id }
+        });
+    }
+
+    removeAllForSchedule(schedule_id: string) {
+        return this.task.deleteMany({
+            where: { schedule_id: schedule_id }
         });
     }
 }

@@ -4,9 +4,13 @@ import { Schedule } from "./models/schedule";
 import { PutScheduleRequest } from "./models/put-schedule-request";
 import { PostScheduleRequest } from "./models/post-schedule-request";
 import { PrismaClient } from "@prisma/client";
+import { TaskService } from "./../task/task.service";
 
 @Injectable()
 export class SchedulesService extends PrismaClient {
+    constructor (private readonly taskService: TaskService) {
+        super();
+    }
 
     async create(data: PostScheduleRequest): Promise<Schedule> {
         const schedule = {
@@ -39,8 +43,10 @@ export class SchedulesService extends PrismaClient {
     }
 
     async remove(schedule_id: string) {
-        return this.schedule.delete({
+        const removeTasks = this.taskService.removeAllForSchedule(schedule_id);
+        const removeSchedule = this.schedule.delete({
             where: { id: schedule_id }
         });
+        await this.$transaction([removeTasks, removeSchedule]);
     }
 }

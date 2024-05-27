@@ -55,7 +55,7 @@ export class TaskController {
      * @returns All tasks that belong to the given schedule
      */
     @Get()
-    async findByQuery(@Query('schedule', ParseUUIDPipe) schedule_id: string): Promise<GetTasksResponse> {
+    async findByQuery(@Query('schedule_id', ParseUUIDPipe) schedule_id: string): Promise<GetTasksResponse> {
         console.log(`GET tasks by schedule ${schedule_id}`);
         const tasks = await this.taskService.findBySchedule(schedule_id);
         return { data: tasks };
