@@ -2,7 +2,6 @@ import { Body,
     Controller,
     Delete,
     Get,
-    NotFoundException,
     Param,
     ParseIntPipe,
     ParseUUIDPipe,
@@ -30,7 +29,7 @@ export class SchedulesController {
      */
     @Post()
     async create(@Body() postScheduleRequest: PostScheduleRequest): Promise<Schedule> {
-        console.log(postScheduleRequest);
+        console.log(`POST schedule ${postScheduleRequest}`);
         return this.schedulesService.create(postScheduleRequest);
     }
 
@@ -38,15 +37,12 @@ export class SchedulesController {
      * GET /schedules/<id>
      * 
      * @param id The UUID of the schedule to retrieve
-     * @throws NotFoundException if there is no schedule with the given UUID
      * @returns The schedule corresponding to the given UUID
      */
     @Get(':id')
     async findById(@Param('id', ParseUUIDPipe) id: string): Promise<Schedule> {
         console.log(`GET schedule by id ${id}`);
-        const schedule = this.schedulesService.findById(id);
-        if (!schedule) throw new NotFoundException();
-        return schedule;
+        return this.schedulesService.findById(id);
     }
 
     /**
@@ -58,7 +54,7 @@ export class SchedulesController {
     @Get() // TODO accept agent_id query parameter
     async findByQuery(@Query('account', ParseIntPipe) account_id: number): Promise<GetSchedulesResponse> {
         console.log(`GET schedules by account ${account_id}`);
-        const schedules = this.schedulesService.findByAccount(account_id);
+        const schedules = await this.schedulesService.findByAccount(account_id);
         return { data: schedules };
     }
 
@@ -67,7 +63,6 @@ export class SchedulesController {
      * 
      * @param id The UUID of the schedule to update
      * @param putScheduleRequest Fields of the schedule that should be updated
-     * @throws NotFoundException if there is no schedule with the given UUID
      * @returns The updated schedule
      */
     @Put(':id')
@@ -75,10 +70,8 @@ export class SchedulesController {
         @Param('id', ParseUUIDPipe) id: string,
         @Body() putScheduleRequest: PutScheduleRequest
     ): Promise<Schedule> {
-        console.log(putScheduleRequest);
-        const schedule = this.schedulesService.update(id, putScheduleRequest);
-        if (!schedule) throw new NotFoundException();
-        return schedule;
+        console.log(`PUT schedule ${id} ${putScheduleRequest}`);
+        return this.schedulesService.update(id, putScheduleRequest);
     }
 
     /**
@@ -89,6 +82,6 @@ export class SchedulesController {
     @Delete(':id')
     async remove(@Param('id', ParseUUIDPipe) id: string) {
         console.log(`DELETE schedule by id ${id}`);
-        return this.schedulesService.remove(id);
+        await this.schedulesService.remove(id);
     }
 }

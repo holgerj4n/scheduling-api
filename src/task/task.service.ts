@@ -3,12 +3,12 @@ import { v4 as uuid } from "uuid";
 import { PostTaskRequest } from './models/post-task-request';
 import { PutTaskRequest } from './models/put-task-request';
 import { Task } from './models/task';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class TaskService {
-    private readonly tasks: Task[] = [];
+export class TaskService extends PrismaClient {
 
-    create(data: PostTaskRequest): Task {
+    async create(data: PostTaskRequest): Promise<Task> {
         const task = {
             id: uuid(),
             schedule_id: data.schedule_id,
@@ -16,30 +16,31 @@ export class TaskService {
             duration: data.duration,
             type: data.type
         }
-        this.tasks.push(task);
-        return task;
+        return this.task.create({ data: task });
     }
 
-    findById(task_id: string): Task | undefined {
-        return this.tasks.find(x => x.id === task_id);
+    async findById(task_id: string): Promise<Task> {
+        return this.task.findUniqueOrThrow({
+            where: { id: task_id }
+        });
     }
 
-    findBySchedule(schedule_id: string): Task[] {
-        return this.tasks.filter(x => x.schedule_id === schedule_id);
+    async findBySchedule(schedule_id: string): Promise<Task[]> {
+        return this.task.findMany({
+            where: { schedule_id: schedule_id }
+        });
     }
 
-    update(task_id: string, data: PutTaskRequest): Task | undefined {
-        const task = this.tasks.find(x => x.id === task_id);
-        if (task) {
-            task.start_time = data.start_time ? new Date(data.start_time) : task.start_time;
-            task.duration = data.duration ?? task.duration;
-            task.type = data.type ?? task.type;
-        }
-        return task;
+    async update(task_id: string, data: PutTaskRequest): Promise<Task> {
+        return this.task.update({
+            where: { id: task_id },
+            data: data
+        });
     }
 
-    remove(task_id: string) {
-        const index = this.tasks.findIndex(x => x.id === task_id);
-        this.tasks.splice(index, 1);
+    async remove(task_id: string) {
+        return this.task.delete({
+            where: { id: task_id }
+        });
     }
 }

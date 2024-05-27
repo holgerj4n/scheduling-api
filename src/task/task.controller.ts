@@ -29,7 +29,7 @@ export class TaskController {
      */
     @Post()
     async create(@Body() postTaskRequest: PostTaskRequest): Promise<Task> {
-        console.log(postTaskRequest);
+        console.log(`POST task ${postTaskRequest}`);
         return this.taskService.create(postTaskRequest);
     }
 
@@ -37,15 +37,12 @@ export class TaskController {
      * GET /tasks/<id>
      * 
      * @param id The UUID of the task to retrieve
-     * @throws NotFoundException if there is no task with the given UUID
      * @returns The task corresponding to the given UUID
      */
     @Get(':id')
     async findById(@Param('id', ParseUUIDPipe) id: string): Promise<Task> {
         console.log(`GET task by id ${id}`);
-        const task = this.taskService.findById(id);
-        if (!task) throw new NotFoundException();
-        return task;
+        return this.taskService.findById(id);
     }
 
     /**
@@ -57,7 +54,7 @@ export class TaskController {
     @Get()
     async findByQuery(@Query('schedule', ParseUUIDPipe) schedule_id: string): Promise<GetTasksResponse> {
         console.log(`GET tasks by schedule ${schedule_id}`);
-        const tasks = this.taskService.findBySchedule(schedule_id);
+        const tasks = await this.taskService.findBySchedule(schedule_id);
         return { data: tasks };
     }
 
@@ -74,10 +71,8 @@ export class TaskController {
         @Param('id', ParseUUIDPipe) id: string,
         @Body() putTaskRequest: PutTaskRequest
     ): Promise<Task> {
-        console.log(putTaskRequest);
-        const task = this.taskService.update(id, putTaskRequest);
-        if (!task) throw new NotFoundException();
-        return task;
+        console.log(`PUT task ${id} ${putTaskRequest}`);
+        return this.taskService.update(id, putTaskRequest);
     }
 
     /**
@@ -88,6 +83,6 @@ export class TaskController {
     @Delete(':id')
     async remove(@Param('id', ParseUUIDPipe) id: string) {
         console.log(`DELETE task by id ${id}`);
-        return this.taskService.remove(id);
+        await this.taskService.remove(id);
     }
 }
