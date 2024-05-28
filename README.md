@@ -152,6 +152,9 @@ curl -i -X DELETE \
 # unit tests
 $ npm test
 
+# integration tests
+$ npm run test:e2e
+
 # test coverage
 $ npm run test:cov
 ```

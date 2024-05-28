@@ -72,7 +72,7 @@ describe('TaskController', () => {
 
     describe('remove', () => {
         it("should delete a task by ID", async () => {
-            const spy = jest.spyOn(taskService, 'remove').mockResolvedValueOnce(testTask);
+            const spy = jest.spyOn(taskService, 'remove').mockResolvedValueOnce(undefined);
             await taskController.remove(testId);
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenCalledWith(testId);
